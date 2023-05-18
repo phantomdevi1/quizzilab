@@ -19,42 +19,59 @@
     $username = 'root';
     $password = 'root';
 
-    try {
-        $db = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    } catch (PDOException $e) {
-        die('Ошибка подключения к базе данных: ' . $e->getMessage());
-    }
+    // Установка соединения с сервером MySQL
+$conn = new mysqli($servername, $username, $password);
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $question = $_POST['question'];
-        $answers = [
-            $_POST['answer1'],
-            $_POST['answer2'],
-            $_POST['answer3'],
-            $_POST['answer4']
-        ];
-        $correctAnswer = $_POST['correctAnswer'];
+// Проверка соединения
+if ($conn->connect_error) {
+    die("Ошибка подключения: " . $conn->connect_error);
+}
 
-        try {
-            // Вставка вопроса в базу данных
-            $insertQuestion = $db->prepare("INSERT INTO questions (question) VALUES (?)");
-            $insertQuestion->execute([$question]);
-            $questionId = $db->lastInsertId();
+// Создание базы данных
+$sql_create_database = "CREATE DATABASE IF NOT EXISTS $dbname";
+if ($conn->query($sql_create_database) === TRUE) {
+    echo "База данных создана успешно";
+} else {
+    echo "Ошибка создания базы данных: " . $conn->error;
+}
 
-            // Вставка вариантов ответов в базу данных
-            $insertAnswer = $db->prepare("INSERT INTO answers (question_id, answer, is_correct) VALUES (?, ?, ?)");
-            foreach ($answers as $index => $answer) {
-                $isCorrect = ($correctAnswer == $index + 1) ? 1 : 0;
-                $insertAnswer->execute([$questionId, $answer, $isCorrect]);
+// Выбор базы данных
+$conn->select_db($dbname);
+
+// Обработка отправки формы добавления вопроса
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Получение данных из формы
+    $question = $_POST["question"];
+    $answers = $_POST["answers"];
+    $correctAnswer = $_POST["correctAnswer"];
+    
+    // Вставка вопроса в таблицу "questions"
+    $sql_insert_question = "INSERT INTO questions (question_text) VALUES ('$question')";
+    if ($conn->query($sql_insert_question) === TRUE) {
+        echo "Вопрос успешно добавлен<br>";
+        
+        // Получение ID вставленного вопроса
+        $questionId = $conn->insert_id;
+        
+        // Вставка ответов в таблицу "answers"
+        foreach ($answers as $index => $answer) {
+            $isCorrect = ($index == $correctAnswer) ? 1 : 0;
+            $sql_insert_answer = "INSERT INTO answers (question_id, answer_text, is_correct) VALUES ('$questionId', '$answer', '$isCorrect')";
+            if ($conn->query($sql_insert_answer) !== TRUE) {
+                echo "Ошибка добавления ответа: " . $conn->error;
+                break;
             }
-
-            echo '<script>alert("Тест создан");</script>';
-        } catch (PDOException $e) {
-            echo 'Ошибка при создании теста: ' . $e->getMessage();
         }
+        
+        echo "Ответы успешно добавлены";
+    } else {
+        echo "Ошибка добавления вопроса: " . $conn->error;
     }
-    ?>
+}
+
+// Закрытие соединения с базой данных
+$conn->close();
+?>
 
    <center>
     <a class="text_header">QuizzyLab</a>    
