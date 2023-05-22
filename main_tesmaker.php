@@ -13,65 +13,53 @@
 <body>
 <header>
 <?php
-    // Подключение к базе данных
-    $host = 'localhost';
-    $dbname = 'quizzylab';
-    $username = 'root';
-    $password = 'root';
-
-    // Установка соединения с сервером MySQL
-$conn = new mysqli($servername, $username, $password);
-
-// Проверка соединения
-if ($conn->connect_error) {
-    die("Ошибка подключения: " . $conn->connect_error);
-}
-
-// Создание базы данных
-$sql_create_database = "CREATE DATABASE IF NOT EXISTS $dbname";
-if ($conn->query($sql_create_database) === TRUE) {
-    echo "База данных создана успешно";
-} else {
-    echo "Ошибка создания базы данных: " . $conn->error;
-}
-
-// Выбор базы данных
-$conn->select_db($dbname);
-
-// Обработка отправки формы добавления вопроса
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Получение данных из формы
-    $question = $_POST["question"];
-    $answers = $_POST["answers"];
-    $correctAnswer = $_POST["correctAnswer"];
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Параметры подключения к базе данных
+        $host = 'localhost';
+        $dbName = 'quizzylab';
+        $username = 'root';
+        $password = 'root';
     
-    // Вставка вопроса в таблицу "questions"
-    $sql_insert_question = "INSERT INTO questions (question_text) VALUES ('$question')";
-    if ($conn->query($sql_insert_question) === TRUE) {
-        echo "Вопрос успешно добавлен<br>";
-        
-        // Получение ID вставленного вопроса
-        $questionId = $conn->insert_id;
-        
-        // Вставка ответов в таблицу "answers"
-        foreach ($answers as $index => $answer) {
-            $isCorrect = ($index == $correctAnswer) ? 1 : 0;
-            $sql_insert_answer = "INSERT INTO answers (question_id, answer_text, is_correct) VALUES ('$questionId', '$answer', '$isCorrect')";
-            if ($conn->query($sql_insert_answer) !== TRUE) {
-                echo "Ошибка добавления ответа: " . $conn->error;
-                break;
-            }
+        // Подключение к базе данных
+        $connection = mysqli_connect($host, $username, $password, $dbName);
+        if (!$connection) {
+            die("Ошибка подключения к базе данных: " . mysqli_connect_error());
         }
+    
+        // Получение данных из формы
+        $testname = $_POST['test_name'];
+        $question = $_POST['question'];
+        $answer1 = $_POST['answer1'];
+        $answer2 = $_POST['answer2'];
+        $answer3 = $_POST['answer3'];
+        $answer4 = $_POST['answer4'];
+        $correctanswer = $_POST['correct_answer'];
+        $user_id = 1;
         
-        echo "Ответы успешно добавлены";
-    } else {
-        echo "Ошибка добавления вопроса: " . $conn->error;
-    }
-}
+    
+        // Загрузка обложки теста
+        if ($_FILES['cover_image']['error'] === UPLOAD_ERR_OK) {
+            $coverImage = addslashes(file_get_contents($_FILES['cover_image']['tmp_name']));
+        } else {
+            // Путь к дефолтной картинке
+            $defaultCoverImage = 'img/default_test.png';
+            $coverImage = addslashes(file_get_contents($defaultCoverImage));
+        }
+    
+        $sql = "INSERT INTO tests (user_id, test_name, question, answer1, answer2, answer3, answer4, correct_answer, cover_image)
+        VALUES ('$user_id', '$testname', '$question', '$answer1', '$answer2', '$answer3', '$answer4', '$correctanswer', '$cover_image')";
+    
+        if (mysqli_query($connection, $sql)) {
+            echo "Тест успешно создан!";
+        } else {
+            echo "Ошибка при создании теста: " . mysqli_error($connection);
+        }
 
-// Закрытие соединения с базой данных
-$conn->close();
-?>
+        mysqli_close($connection);
+    }
+
+    ?>
+
 
    <center>
     <a class="text_header">QuizzyLab</a>    
@@ -80,53 +68,39 @@ $conn->close();
 <center>
 <h1 class="title_testmaker">Создайте свой тест!</h1>
 <div class="content_testmaker">
-<form method="post" action="">
-    <input type="text" name="" id="" class="test_name" placeholder="Название теста">
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="user_id" value="<?php echo $user_id; ?>">
+    <input type="text" name="test_name" id="" class="test_name" placeholder="Название теста">
     <div class="img_test-div">
         <span class="title_img_test">Обложка</span>
-        <input type="file" name="" id="" class="file_img_test">
+        <input type="file" name="cover_image" id="" class="file_img_test">
     </div>
     <textarea name="question" id="question" cols="30" rows="10" class="" placeholder="Напишите вопрос"></textarea>
     <h2 class="title_answer-testmaker">Добавьте варианты ответов</h2>
 
-    <label for="answer1">Ответ 1:</label>
-        <input type="text" id="answer1" name="answer1" required>
+    <label for="answer1">Вариант ответа 1:</label>
+        <input type="text" name="answer1" id="answer1"><br>
 
-        <br>
+        <label for="answer2">Вариант ответа 2:</label>
+        <input type="text" name="answer2" id="answer2"><br>
 
-        <label for="answer2">Ответ 2:</label>
-        <input type="text" id="answer2" name="answer2" required>
+        <label for="answer3">Вариант ответа 3:</label>
+        <input type="text" name="answer3" id="answer3"><br>
 
-        <br>
+        <label for="answer4">Вариант ответа 4:</label>
+        <input type="text" name="answer4" id="answer4"><br><br>
 
-        <label for="answer3">Ответ 3:</label>
-        <input type="text" id="answer3" name="answer3" required>
+    <label for="correct_answer">Правильный ответ:</label>
+       
+        <select name="correct_answer">
+            <option value="1">Ответ 1</option>
+            <option value="2">Ответ 2</option>
+            <option value="3">Ответ 3</option>
+            <option value="4">Ответ 4</option>
+        </select>
+        
 
-        <br>
-
-        <label for="answer4">Ответ 4:</label>
-        <input type="text" id="answer4" name="answer4" required>
-
-        <br><br>
-
-        <label for="correctAnswer1">
-            Правильный ответ:
-            <input type="radio" id="correctAnswer1" name="correctAnswer" value="1" required>
-        </label>
-
-        <label for="correctAnswer2">
-            <input type="radio" id="correctAnswer2" name="correctAnswer" value="2" required>
-        </label>
-
-        <label for="correctAnswer3">
-            <input type="radio" id="correctAnswer3" name="correctAnswer" value="3" required>
-        </label>
-
-        <label for="correctAnswer4">
-            <input type="radio" id="correctAnswer4" name="correctAnswer" value="4" required>
-        </label>
-
-        <br><br>
+       
 
         <button type="submit">Создать тест</button>
 </form>

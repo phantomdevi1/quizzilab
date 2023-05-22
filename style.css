@@ -313,3 +313,8 @@ background: linear-gradient(90.15deg, #90C1FC 0%, rgba(0, 111, 242, 0.37) 100%);
     font-weight: 400;
     font-size: 32px;
 }
+
+#answer1, #answer2, #answer3, #answer4{
+    width: 400px;
+
+}
