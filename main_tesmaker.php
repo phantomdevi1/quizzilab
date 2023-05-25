@@ -9,6 +9,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=B612:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <style>
+        .question-container {
+            margin-bottom: 20px;
+        }
+        .question-container textarea {
+            width: 100%;
+        }
+        .question-container label {
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
 <header>
@@ -28,14 +40,7 @@
     
         // Получение данных из формы
         $testname = $_POST['test_name'];
-        $question = $_POST['question'];
-        $answer1 = $_POST['answer1'];
-        $answer2 = $_POST['answer2'];
-        $answer3 = $_POST['answer3'];
-        $answer4 = $_POST['answer4'];
-        $correctanswer = $_POST['correct_answer'];
         $user_id = 1;
-        
     
         // Загрузка обложки теста
         if ($_FILES['cover_image']['error'] === UPLOAD_ERR_OK) {
@@ -46,21 +51,35 @@
             $coverImage = addslashes(file_get_contents($defaultCoverImage));
         }
     
-        $sql = "INSERT INTO tests (user_id, test_name, question, answer1, answer2, answer3, answer4, correct_answer, cover_image)
-        VALUES ('$user_id', '$testname', '$question', '$answer1', '$answer2', '$answer3', '$answer4', '$correctanswer', '$cover_image')";
+        $sql = "INSERT INTO tests (user_id, test_name, cover_image) VALUES ('$user_id', '$testname', '$coverImage')";
     
         if (mysqli_query($connection, $sql)) {
-            echo "Тест успешно создан!";
+            $testId = mysqli_insert_id($connection); // Получаем ID только что созданного теста
+    
+            // Добавление вопросов и ответов в базу данных
+            for ($i = 1; $i <= 10; $i++) {
+                $question = $_POST['question' . $i];
+                $answer1 = $_POST['answer' . $i . '_1'];
+                $answer2 = $_POST['answer' . $i . '_2'];
+                $answer3 = $_POST['answer' . $i . '_3'];
+                $answer4 = $_POST['answer' . $i . '_4'];
+                $correctanswer = $_POST['correct_answer' . $i];
+    
+                $sql = "INSERT INTO questions (test_id, question, answer1, answer2, answer3, answer4, correct_answer)
+                VALUES ('$testId', '$question', '$answer1', '$answer2', '$answer3', '$answer4', '$correctanswer')";
+    
+                mysqli_query($connection, $sql);
+            }
+    
+            echo '<script>alert("Тест успешно создан!");</script>';
         } else {
             echo "Ошибка при создании теста: " . mysqli_error($connection);
         }
+        
 
         mysqli_close($connection);
     }
-
     ?>
-
-
    <center>
     <a class="text_header">QuizzyLab</a>    
     </center>
@@ -75,34 +94,40 @@
         <span class="title_img_test">Обложка</span>
         <input type="file" name="cover_image" id="" class="file_img_test">
     </div>
-    <textarea name="question" id="question" cols="30" rows="10" class="" placeholder="Напишите вопрос"></textarea>
-    <h2 class="title_answer-testmaker">Добавьте варианты ответов</h2>
+    <br>
+    <hr>
+    
+    <?php for ($i = 1; $i <= 10; $i++) { ?>
+        <div class="question-container">
+            <textarea class="textarea_question" name="question<?php echo $i; ?>" id="question<?php echo $i; ?>" cols="30" rows="10" class="" placeholder="Напишите вопрос <?php echo $i; ?>"></textarea>
+            <h2 class="title_answer-testmaker">Добавьте варианты ответов для вопроса <?php echo $i; ?></h2>
 
-    <label for="answer1">Вариант ответа 1:</label>
-        <input type="text" name="answer1" id="answer1"><br>
+            <label for="answer<?php echo $i; ?>_1">Вариант ответа 1:</label>
+            <input class="answer_input" type="text" name="answer<?php echo $i; ?>_1" id="answer<?php echo $i; ?>_1"><br>
 
-        <label for="answer2">Вариант ответа 2:</label>
-        <input type="text" name="answer2" id="answer2"><br>
+            <label for="answer<?php echo $i; ?>_2">Вариант ответа 2:</label>
+            <input class="answer_input" type="text" name="answer<?php echo $i; ?>_2" id="answer<?php echo $i; ?>_2"><br>
 
-        <label for="answer3">Вариант ответа 3:</label>
-        <input type="text" name="answer3" id="answer3"><br>
+            <label for="answer<?php echo $i; ?>_3">Вариант ответа 3:</label>
+            <input class="answer_input" type="text" name="answer<?php echo $i; ?>_3" id="answer<?php echo $i; ?>_3"><br>
 
-        <label for="answer4">Вариант ответа 4:</label>
-        <input type="text" name="answer4" id="answer4"><br><br>
+            <label for="answer<?php echo $i; ?>_4">Вариант ответа 4:</label>
+            <input class="answer_input" type="text" name="answer<?php echo $i; ?>_4" id="answer<?php echo $i; ?>_4"><br>
+            
+           
+            
+            <label for="correct_answer<?php echo $i; ?>">Правильный ответ:</label>
+            <select class="select_correct" name="correct_answer<?php echo $i; ?>">
+                <option value="1">Ответ 1</option>
+                <option value="2">Ответ 2</option>
+                <option value="3">Ответ 3</option>
+                <option value="4">Ответ 4</option>
+            </select>
+            <hr>
+        </div>
+    <?php } ?>
 
-    <label for="correct_answer">Правильный ответ:</label>
-       
-        <select name="correct_answer">
-            <option value="1">Ответ 1</option>
-            <option value="2">Ответ 2</option>
-            <option value="3">Ответ 3</option>
-            <option value="4">Ответ 4</option>
-        </select>
-        
-
-       
-
-        <button type="submit">Создать тест</button>
+    <button type="submit" class="create_test">Создать тест</button>
 </form>
 </div>
 </center>

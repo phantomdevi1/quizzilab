@@ -79,11 +79,11 @@ mysqli_close($conn);
    
 
     <div class="column">
-    <div class="testtaker" id="block1">
+    <div class="testtaker" id="block1" >
         <a href="main_testtaker.php" ></a>
         
     </div>
-    <div class="testtaker_info" id="block2">
+    <div class="testtaker_info" id="block2" >
     <span>TestTaker</span>   
         </div>
      </div>

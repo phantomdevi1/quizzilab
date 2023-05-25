@@ -262,9 +262,10 @@ background: linear-gradient(90.15deg, #90C1FC 0%, rgba(0, 111, 242, 0.37) 100%);
 }
 .content_testmaker{
     width: 943px;
-    height: 793px;
+    min-height: 793px;
     background: rgba(144, 193, 252, 0.17);
     border-radius: 10px;
+    margin-bottom: 20px;
 }
 .test_name{
     margin-top: 25px;
@@ -318,3 +319,42 @@ background: linear-gradient(90.15deg, #90C1FC 0%, rgba(0, 111, 242, 0.37) 100%);
     width: 400px;
 
 }
+.select_correct{
+    margin-bottom: 10px;
+}
+.textarea_question{
+    margin-top: 20px;
+    max-width: 500px;
+}
+.answer_input{
+    width: 500px;
+    height: 20px;
+}
+.create_test{
+    width: 270px;
+    height: 42px;
+    background: #4D00F0;
+    border-radius: 10px;
+    border: none;
+    color: #FFFFFF;
+    font-weight: 400;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+.create_test:hover{
+    background-color: #FFFFFF;
+    color: #4D00F0;
+}
+
+.variants{
+    display: block;
+}
+
+.invisible-marker {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .invisible-marker li:before {
+    content: "";
+  }
