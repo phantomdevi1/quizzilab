@@ -10,7 +10,7 @@
 <body>
 <header>
    <center>
-    <a class="text_header">QuizzyLab</a>
+    <a class="text_header" href="authorization.php">QuizzyLab</a>
     </center>
 </header>
 <?php
@@ -52,7 +52,7 @@
     <h1>Список тестов</h1>
     <ul class="invisible-marker">
         <?php foreach ($tests as $test) { ?>
-            <li>
+            <li class = "spis">
                 <a href="quiz.php?test_id=<?php echo $test['id']; ?>"><?php echo $test['test_name']; ?></a>
             </li>
         <?php } ?>

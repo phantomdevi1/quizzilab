@@ -81,7 +81,7 @@
     }
     ?>
    <center>
-    <a class="text_header">QuizzyLab</a>    
+    <a class="text_header" href="authorization.php">QuizzyLab</a>    
     </center>
 </header>
 <center>

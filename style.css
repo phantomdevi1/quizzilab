@@ -21,6 +21,11 @@ background: linear-gradient(90.15deg, #90C1FC 0%, rgba(0, 111, 242, 0.37) 100%);
     font-weight: 400;
     font-size: 64px;
     margin-top: 10px;
+    text-decoration: none;
+    cursor: pointer;
+}
+.text_header:hover{
+    font-size: 70px;
 }
 .content_auto{
     width: 516px;
@@ -357,4 +362,8 @@ background: linear-gradient(90.15deg, #90C1FC 0%, rgba(0, 111, 242, 0.37) 100%);
   
   .invisible-marker li:before {
     content: "";
+  }
+
+  .invisible-marker{
+    text-decoration: none;
   }
