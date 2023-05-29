@@ -55,14 +55,29 @@
 
     // Рассчет процента правильных ответов
     $percentage = ($correctAnswers / $totalQuestions) * 100;
+    
+    // Получение имени пользователя из параметров формы
+    $username = $_POST['username_quiz'];
+    
+    // Сохранение результатов в базу данных
+    $insertSql = "INSERT INTO results (username, test_name, correct_answers, total_questions, percentage) 
+                  VALUES ('$username', '{$test['test_name']}', '$correctAnswers', '$totalQuestions', '$percentage')";
+    $insertResult = mysqli_query($connection, $insertSql);
+    if (!$insertResult) {
+        die("Ошибка при сохранении результатов: " . mysqli_error($connection));
+    }
 ?>
 
 <hr>
 
 <center>
-    <h1>Результаты теста "<?php echo $test['test_name']; ?>"</h1>
-    <h2>Правильных ответов: <?php echo $correctAnswers; ?>/<?php echo $totalQuestions; ?></h2>
+    <div class="content_result">
+    <h1>Итоги</h1>
+    <h2>Результаты теста "<?php echo $test['test_name']; ?>"</h1>
+    <h2>Имя пользователя: <?php echo $username; ?></h2>
+    <h2>Колличество правильных ответов: </h2> <span class="correctanswers-result"><?php echo $correctAnswers; ?>/<?php echo $totalQuestions; ?></span>
     <h2>Процент правильных ответов: <?php echo $percentage; ?>%</h2>
+    </div>
 </center>
 
 </body>

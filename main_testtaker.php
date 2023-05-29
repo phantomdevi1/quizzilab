@@ -6,6 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Главная</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .content_main_testtaker {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .test-card {
+        width: 200px;
+        margin: 10px;
+        padding: 20px;
+        text-align: center;
+        border-radius: 20px;
+        border: 2px solid transparent; 
+    }
+
+    .test-card:hover {
+        border-color: #90C1FC; 
+    }
+
+    .test-card img {
+        width: 200px;
+        height: 200px;
+    }
+
+    </style>
 </head>
 <body>
 <header>
@@ -43,20 +69,20 @@
     }
 ?>
 
-
-
-<hr>
-
 <!-- Вывод всех созданных тестов -->
-<center>
-    <h1>Список тестов</h1>
-    <ul class="invisible-marker">
+<center><h1>Список тестов</h1>
+        
+    <div class="content_main_testtaker">
+        
         <?php foreach ($tests as $test) { ?>
-            <li class = "spis">
-                <a href="quiz.php?test_id=<?php echo $test['id']; ?>"><?php echo $test['test_name']; ?></a>
-            </li>
+            <div class="test-card">
+                <a class="name_test-testtaker" href="quiz.php?test_id=<?php echo $test['id']; ?>">
+                    <img src="data:image/jpeg;base64,<?php echo base64_encode($test['cover_image']); ?>" alt="Cover Image">
+                    <p><?php echo $test['test_name']; ?></p>
+                </a>
+            </div>
         <?php } ?>
-    </ul>
+    </div>
 </center>
 
 </body>

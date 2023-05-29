@@ -38,20 +38,54 @@
     $sql = "SELECT * FROM questions WHERE test_id = '$testId'";
     $result = mysqli_query($connection, $sql);
     $questions = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    // Обработка отправки формы с результатами теста
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Получение данных из формы
+        $username = $_POST['username_quiz'];
+        $testId = $_POST['test_id'];
+        $answers = $_POST;
+        unset($answers['username_quiz'], $answers['test_id']);
+
+        // Подсчет результатов
+        $totalQuestions = count($questions);
+        $correctAnswers = 0;
+
+        foreach ($questions as $question) {
+            $questionId = $question['id'];
+            $selectedAnswer = $answers['answer_' . $questionId];
+            $correctAnswer = $question['correct_answer'];
+
+            if ($selectedAnswer == $correctAnswer) {
+                $correctAnswers++;
+            }
+        }
+
+        // Рассчет процента правильных ответов
+        $percentage = ($correctAnswers / $totalQuestions) * 100;
+
+        // Сохранение результатов в базу данных
+        $insertSql = "INSERT INTO results (username, test_name, correct_answers, total_questions, percentage) VALUES ('$username', '{$test['test_name']}', $correctAnswers, $totalQuestions, $percentage)";
+        $insertResult = mysqli_query($connection, $insertSql);
+        if (!$insertResult) {
+            die("Ошибка при сохранении результатов: " . mysqli_error($connection));
+        }
+    }
 ?>
 
 <hr>
 
 <center>
     <h1><?php echo $test['test_name']; ?></h1>
-    <img src="data:image/jpeg;base64,<?php echo base64_encode($test['cover_image']); ?>" alt="Cover Image" class="cover-image" width = 100px height = 100px>
+    <img src="data:image/jpeg;base64,<?php echo base64_encode($test['cover_image']); ?>" alt="Cover Image" class="cover-image" width="100px" height="100px">
     <form action="results.php" method="post">
-        <input type="hidden"  name="test_id" value="<?php echo $testId; ?>">
+        <input type="hidden" name="test_id" value="<?php echo $testId; ?>">
+        
         <?php foreach ($questions as $question) { ?>
             <div class="question-container">
                 <h2><?php echo $question['question']; ?></h2>
                 <label>
-                    <input type="radio" class = vvariants name="answer_<?php echo $question['id']; ?>" value="1">
+                    <input type="radio" class="vvariants" name="answer_<?php echo $question['id']; ?>" value="1">
                     <?php echo $question['answer1']; ?>
                 </label>
                 <label>
@@ -68,7 +102,12 @@
                 </label>
             </div>
         <?php } ?>
-        <button type="submit" class="submit-test">Завершить тест</button>
+        
+        <div class="flex_column">
+            <label class="username_testtaker-label" for="username_quiz">Введите ваше имя:</label>
+            <input class="username_testtaker-input" type="text" id="username_quiz" name="username_quiz" required>
+            <button type="submit" class="submit-test">Завершить тест</button>
+        </div>
     </form>
 </center>
 
