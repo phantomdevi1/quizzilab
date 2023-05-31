@@ -386,10 +386,10 @@ background: linear-gradient(90.15deg, #90C1FC 0%, rgba(0, 111, 242, 0.37) 100%);
     text-decoration: none;
   }
   .content_result{
-    margin-top: 80px;
+    margin-top: 50px;
     max-width: 943px;
     width: 100%;
-    min-height: 816px;
+    min-height: 770px;
     background: rgba(144, 193, 252, 0.17);
     border-radius: 10px;
     margin-bottom: 50px;
@@ -397,5 +397,50 @@ background: linear-gradient(90.15deg, #90C1FC 0%, rgba(0, 111, 242, 0.37) 100%);
   .correctanswers-result{
     background-color: #FFFFFF;
     color: #000000;
-    
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  .content_result h1{
+    font-size: 96px;
+  }
+  .kolvo_answer-h2{
+    height: 40px;
+    display: inline-flex;
+  }
+  .content_result h2{
+    margin: 15px;
+    margin-bottom: 70px;
+  }
+
+  .more_test{    
+    padding: 15px;
+    background: #5200FF;
+    border-radius: 10px;
+    font-weight: 400;
+    font-size: 64px;
+    color: #FFFFFF;
+    text-decoration: none;
+  }
+  .more_test:hover{
+    font-size: 75px;
+  }
+  .more_test:active{
+    background: #260273;
+  }
+  .question-container{
+    margin: 20px;
+  }
+  .flex_column label{
+    margin-bottom: 10px;
+  }
+  .img_border{
+    border-radius: 20px;
+  }
+  .submit-test{
+    margin-bottom: 30px;
+  }
+  .question-container h2{
+    max-width: 500px;
+    margin-bottom: 30px;
   }

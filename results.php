@@ -75,10 +75,12 @@
     <h1>Итоги</h1>
     <h2>Результаты теста "<?php echo $test['test_name']; ?>"</h1>
     <h2>Имя пользователя: <?php echo $username; ?></h2>
-    <h2>Колличество правильных ответов: </h2> <span class="correctanswers-result"><?php echo $correctAnswers; ?>/<?php echo $totalQuestions; ?></span>
+    <h2 class="kolvo_answer-h2">Колличество правильных ответов: <span class="correctanswers-result"> <?php echo $correctAnswers; ?>/<?php echo $totalQuestions; ?> </span></h2> 
     <h2>Процент правильных ответов: <?php echo $percentage; ?>%</h2>
+    <a class="more_test" href="main_testtaker.php">Пройти ещё тест!</a>
     </div>
 </center>
+
 
 </body>
 </html>

@@ -77,13 +77,14 @@
 
 <center>
     <h1><?php echo $test['test_name']; ?></h1>
-    <img src="data:image/jpeg;base64,<?php echo base64_encode($test['cover_image']); ?>" alt="Cover Image" class="cover-image" width="100px" height="100px">
+    <img class="img_border" src="data:image/jpeg;base64,<?php echo base64_encode($test['cover_image']); ?>" alt="Cover Image" class="cover-image" width="200px" height="200px">
     <form action="results.php" method="post">
         <input type="hidden" name="test_id" value="<?php echo $testId; ?>">
         
         <?php foreach ($questions as $question) { ?>
             <div class="question-container">
                 <h2><?php echo $question['question']; ?></h2>
+                <div class="flex_column">
                 <label>
                     <input type="radio" class="vvariants" name="answer_<?php echo $question['id']; ?>" value="1">
                     <?php echo $question['answer1']; ?>
@@ -100,6 +101,8 @@
                     <input type="radio" name="answer_<?php echo $question['id']; ?>" value="4">
                     <?php echo $question['answer4']; ?>
                 </label>
+                </div>
+                <hr width="700px">
             </div>
         <?php } ?>
         
