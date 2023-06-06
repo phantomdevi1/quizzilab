@@ -350,6 +350,9 @@ background: linear-gradient(90.15deg, #90C1FC 0%, rgba(0, 111, 242, 0.37) 100%);
     background-color: #FFFFFF;
     color: #4D00F0;
 }
+.create_test:active{
+    background-color: #807d7d;
+}
 
 .variants{
     display: block;
@@ -389,7 +392,7 @@ background: linear-gradient(90.15deg, #90C1FC 0%, rgba(0, 111, 242, 0.37) 100%);
     margin-top: 50px;
     max-width: 943px;
     width: 100%;
-    min-height: 770px;
+    min-height: 850px;
     background: rgba(144, 193, 252, 0.17);
     border-radius: 10px;
     margin-bottom: 50px;
@@ -421,6 +424,7 @@ background: linear-gradient(90.15deg, #90C1FC 0%, rgba(0, 111, 242, 0.37) 100%);
     font-size: 64px;
     color: #FFFFFF;
     text-decoration: none;
+    margin-bottom: 20px;
   }
   .more_test:hover{
     font-size: 75px;
@@ -439,8 +443,25 @@ background: linear-gradient(90.15deg, #90C1FC 0%, rgba(0, 111, 242, 0.37) 100%);
   }
   .submit-test{
     margin-bottom: 30px;
+    width: 270px;
+    height: 42px;
+    background: #4D00F0;
+    border-radius: 10px;
+    text-align: center;
+    color: #FFFFFF;
+    font-size: 24px;
   }
   .question-container h2{
     max-width: 500px;
     margin-bottom: 30px;
   }
+  .flex_one{
+    display: flex;
+  }
+  .profile{
+    margin-right: 10px;
+  }
+  .margin_right{
+    margin-right: 0px;
+  }
+

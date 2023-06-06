@@ -77,8 +77,32 @@
     <h2>Имя пользователя: <?php echo $username; ?></h2>
     <h2 class="kolvo_answer-h2">Колличество правильных ответов: <span class="correctanswers-result"> <?php echo $correctAnswers; ?>/<?php echo $totalQuestions; ?> </span></h2> 
     <h2>Процент правильных ответов: <?php echo $percentage; ?>%</h2>
-    <a class="more_test" href="main_testtaker.php">Пройти ещё тест!</a>
+
+    
+
+        <?php
+            $grade = '';
+            
+            if ($percentage > 80) {
+                $grade = '5';
+            } elseif ($percentage > 65) {
+                $grade = '4';
+            } elseif ($percentage > 45) {
+                $grade = '3';
+            } elseif ($percentage > 30 or $percentage < 45) {
+                $grade = '2';
+            } else {
+                $grade = '2';
+            }
+            
+            echo '<h2>Оценка: ' . $grade . '</h2>';
+        ?>
+    
+        <a class="more_test" href="main_testtaker.php">Пройти ещё тест!</a>
     </div>
+</center>
+
+    
 </center>
 
 

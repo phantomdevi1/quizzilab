@@ -20,10 +20,13 @@
             display: block;
             margin-top: 10px;
         }
+        .error {
+            color: red;
+        }
     </style>
 </head>
 <body>
-<header>
+<header class="flex_one">
 <?php
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Параметры подключения к базе данных
@@ -51,43 +54,62 @@
             $coverImage = addslashes(file_get_contents($defaultCoverImage));
         }
     
-        $sql = "INSERT INTO tests (user_id, test_name, cover_image) VALUES ('$user_id', '$testname', '$coverImage')";
-    
-        if (mysqli_query($connection, $sql)) {
-            $testId = mysqli_insert_id($connection); // Получаем ID только что созданного теста
-    
-            // Добавление вопросов и ответов в базу данных
-            for ($i = 1; $i <= 10; $i++) {
-                $question = $_POST['question' . $i];
-                $answer1 = $_POST['answer' . $i . '_1'];
-                $answer2 = $_POST['answer' . $i . '_2'];
-                $answer3 = $_POST['answer' . $i . '_3'];
-                $answer4 = $_POST['answer' . $i . '_4'];
-                $correctanswer = $_POST['correct_answer' . $i];
-    
-                $sql = "INSERT INTO questions (test_id, question, answer1, answer2, answer3, answer4, correct_answer)
-                VALUES ('$testId', '$question', '$answer1', '$answer2', '$answer3', '$answer4', '$correctanswer')";
-    
-                mysqli_query($connection, $sql);
+        // Проверка на пустые вопросы
+        $hasEmptyQuestion = false;
+        for ($i = 1; $i <= 10; $i++) {
+            $question = trim($_POST['question' . $i]);
+            if (empty($question)) {
+                $hasEmptyQuestion = true;
+                break;
             }
-    
-            echo '<script>alert("Тест успешно создан!");</script>';
-        } else {
-            echo "Ошибка при создании теста: " . mysqli_error($connection);
         }
-        
-
+    
+        if ($hasEmptyQuestion) {
+            echo '<script>alert("Нельзя добавлять пустые вопросы!");</script>';
+        } else {
+            $sql = "INSERT INTO tests (user_id, test_name, cover_image) VALUES ('$user_id', '$testname', '$coverImage')";
+    
+            if (mysqli_query($connection, $sql)) {
+                $testId = mysqli_insert_id($connection); // Получаем ID только что созданного теста
+    
+                // Добавление вопросов и ответов в базу данных
+                for ($i = 1; $i <= 10; $i++) {
+                    $question = $_POST['question' . $i];
+                    $answer1 = $_POST['answer' . $i . '_1'];
+                    $answer2 = $_POST['answer' . $i . '_2'];
+                    $answer3 = $_POST['answer' . $i . '_3'];
+                    $answer4 = $_POST['answer' . $i . '_4'];
+                    $correctanswer = $_POST['correct_answer' . $i];
+    
+                    $sql = "INSERT INTO questions (test_id, question, answer1, answer2, answer3, answer4, correct_answer)
+                    VALUES ('$testId', '$question', '$answer1', '$answer2', '$answer3', '$answer4', '$correctanswer')";
+    
+                    mysqli_query($connection, $sql);
+                }
+    
+                echo '<script>alert("Тест успешно создан!");</script>';
+            } else {
+                echo "Ошибка при создании теста: " . mysqli_error($connection);
+            }
+        }
+    
         mysqli_close($connection);
     }
     ?>
-   <center>
-    <a class="text_header" href="authorization.php">QuizzyLab</a>    
-    </center>
+  
+    <a class="text_header margin_right" href="authorization.php">QuizzyLab</a>    
+    
+    <a href="main_testtaker_results.php" class="profile">
+        <img src="img/ava.svg" alt="">
+    </a>
+    
 </header>
 <center>
+    
 <h1 class="title_testmaker">Создайте свой тест!</h1>
 <div class="content_testmaker">
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
+
     <input type="hidden" name="user_id" value="<?php echo $user_id; ?>">
     <input type="text" name="test_name" id="" class="test_name" placeholder="Название теста">
     <div class="img_test-div">
